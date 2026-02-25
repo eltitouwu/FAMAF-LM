@@ -1,0 +1,441 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{scalerel}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{listings}
+\usepackage{mathrsfs}
+
+\setlength{\headheight}{-2.8cm}
+\setlength{\headsep}{1cm}
+\setlength{\oddsidemargin}{-0.8cm}
+\setlength{\evensidemargin}{1cm}
+\setlength{\textheight}{30cm}
+\setlength{\textwidth}{18cm}
+\setlength{\parindent}{15pt} 
+
+\def\C{{\mathbb{C}}}
+\def\R{{\mathbb{R}}}
+\def\N{{\mathbb{N}}}
+\def\Z{{\mathbb{Z}}}
+\def\Q{{\mathbb{Q}}}
+\def\R{{\mathbb{R}}}
+\def\Nu {{\rm Nu}}
+\def\Im {{\rm Im}}
+\def\rg {{\rm rg}}
+\def\dim{{\rm dim}}
+\def\U{{\mathcal{U}}}
+\def\V{{\mathcal{V}}}
+\def\W{{\mathcal{W}}}
+\def\EP{{$(\Omega, \mathscr{A}, P)$}}
+\newcommand{\Sum}{\sum\limits}
+\newcommand{\qeq}{\stackrel{?}{=}}
+
+\pagestyle{empty}
+
+\usepackage[pdftex]{hyperref}
+
+
+\usepackage{array} 
+
+\usepackage{pgffor}
+\usepackage{diagbox}
+
+\newcommand*\circled[2][1.6]{\tikz[baseline=(char.base)]{
+    \node[shape=circle, draw, inner sep=1pt, 
+        minimum height={\f@size*#1},] (char) {\vphantom{WAH1g}#2};}}
+\makeatother
+
+\begin{document}
+
+\title{Apunte de probabilidad (LM)}
+\date{}
+\author{Tiziano Brunelli, Fran Arredondo y Fernando Ahumada}
+
+\maketitle
+
+\ul{\Large Definición:} Sea $\Omega$ un conjunto. Una colección no vacía $\mathscr{A}$ de subconjuntos de $\Omega$ es una $\sigma\text{-Álgebra}$ de subconjuntos de $\Omega$ si cumplen las siguientes dos propiedades:
+\begin{enumerate}
+    \item si $A\in\mathscr{A} \implies A^c\in\mathscr{A}$
+    \item sea $\left \lbrace A_n \right \rbrace_{n\in \mathbb{N}}$ una sucesión de elementos de $\mathscr{A}$, entonces $\bigcup\limits_{n=1}^{\infty} A_n \in \mathscr{A}$ y $\bigcap\limits_{n=1}^{\infty} A_n\in \mathscr{A}$
+\end{enumerate}
+
+\ul{\large Propiedad:} Sea $\mathscr{A}$ una $\sigma\text{-Álgebra}$ de subconjuntos de $\Omega$, entonces  $\Omega \in \mathscr{A}$ y $\emptyset \in \mathscr{A}$.\newline
+
+
+\ul{\Large Definición:} Sea $\mathscr{A}$ una $\sigma-\text{Álgebra}$ de subconjuntos de $Omega$. Una medida de probabilidad $P$ es una función $P:\mathscr{A} \rightarrow \mathbb{R}$ con las siguientes propiedades:
+\begin{enumerate}
+    \item $P(\Omega)=1$
+    \item $P(A)\geq 0~~~~ \forall A \in \mathscr{A}$
+    \item sea $\left \lbrace A_n \right \rbrace_{n\in \mathbb{N}}$ una sucesión de elementos de $\mathscr{A}$,disjuntos dos a dos, entonces:
+    $$P\left( \bigcup\limits_{n=1}^{\infty}  A_n\right)= \sum\limits_{n=1}^{\infty} P(A_n)$$
+\end{enumerate}
+
+\ul{\large Propiedades:} 
+\begin{enumerate}
+    \item $\forall A\in \mathscr{A}: P(A)\leq1$.  
+    \item $P(\emptyset)=0$
+    \item $P(A^c)=1-P(A)$
+\end{enumerate}
+
+\ul{\Large Definición:} Un Espacio de probabilidad, representado por \EP, es una tupla con un conjunto $\Omega$, una $\sigma-\text{Álgebra}$ $\mathscr{A}$ de subconjuntos de $\Omega$ y una medida de probabilidad $P$ definida sobre $\mathscr{A}$.\newline
+
+\ul{\large Definición:} En contexto de un Espacio de probabilidad, a un elemento $A$ de una $\sigma-\text{Álgebra}$ $\mathscr{A}$ se le llama evento.  \newline
+
+\newpage
+
+
+\ul{\Large Teorema de Inclusión-Exclusión:} Sean $A_1,...,A_n$ conjuntos finitos entonces:
+$$\left| \bigcup\limits_{k=1}^n A_k \right|=\sum\limits_{k=1}^n (-1)^{k+1} s_k$$
+donde: $$s_k=\sum\limits_{1\leq i_1<\dots <i_k\leq n} ~~\left| \bigcap\limits_{j=1}^k A_{i_j}\right|$$
+O, como me gusta escribirlo:
+
+$$\left| \bigcup\limits_{k=1}^n A_k \right|=\sum\limits_{\underset{\sigma \neq \emptyset}{\sigma \subseteq \left\lbrace 1,\dots,n\right\rbrace}}(-1)^{\left| \sigma \right|+1}\left| \bigcap\limits_{k\in \sigma} A_k\right|$$
+Análogamente, si $A_1,\dots, A_n$ son eventos de un Espacio de probabilidad \EP ~(nótese que ahora no se dijo nada sobre la finitud de los $A_k$), entonces:
+$$P\left( \bigcup\limits_{k=1}^n A_k \right)=\sum\limits_{k=1}^n (-1)^{k+1} S_k$$
+donde: $$S_k=\sum\limits_{1\leq i_1<\dots <i_k\leq n} ~~P\left( \bigcap\limits_{j=1}^k A_{i_j}\right)$$
+
+\ul{\Large Definición:} Sean $A$ y $B$ dos eventos de un Espacio de probabilidad \EP, con $P(A)>0$, entonces se define la \ul{probabilidad de $B$ dado $A$}, $P(B\mid A)$, como:
+$$P(B \mid A)=\frac{P(A\cap B)}{P(A)}$$
+$P(B\mid A)$ queda indefinida si $P(A)=0$.\newline
+
+\hspace{1cm}
+
+\ul{\Large Teorema de probabilidad Total (TPT):} En un Espacio de probabilidad \EP , sean $A_1,...,A_n$ eventos disjuntos dos a dos con $P(A_i)>0~ \forall i$, entonces $\forall B\in \mathscr{A}:$
+$$P(B)= \sum\limits_{i=1}^n P(B \mid A_i) P(A_i)$$
+
+\ul{\Large Definición:} dado un Espacio de probabilidad \EP, se dice que una colección de eventos $\mathcal{A}=\left\lbrace A_i \right\rbrace_{1\leq i \leq n}$ es independiente si $n=1$ o:
+    $$P\left(\bigcap\limits_{k=1}^{n} A_k \right) = \prod\limits_{k=1}^n P(A_k)$$
+    y todo subconjunto no vacío de $\mathcal{A}$ con menos de $n$ elementos es independiente. Además diremos que los eventos $A_1, \dots , A_n$ son independientes. 
+
+\newpage
+
+\ul{\Large Definición:} Una variable aleatoria $X$ en un Espacio de probabilidad \EP es una función $X:\Omega \rightarrow \R$ tal que $\forall x \in \R: \left \lbrace \omega \in \Omega: X(\omega) \leq x \right \rbrace \in \mathscr{A}$. \newline
+
+\hspace{1cm}
+
+\ul{\large Definición:} Se dice que una v.a $X$ es discreta si su rango es contable.\newline
+
+\hspace{1cm}
+
+\ul{\Large Definición:} Sea \EP un Espacio de probabilidad, y $X$ una v.a discreta en este Espacio. Entonces la función $f:\R \rightarrow [0,1]$ dada por $f(x)=P(X=x) \forall x\in\R$ se llama función de densidad discreta de $X$. También se le suele denotar con $f_X(x)$.\\
+Además diremos que $x$ es un valor posible de $X$ si $f(x)>0$.\newline
+
+
+\ul{\large Teorema} Sea $f: \R \rightarrow \R$ con:
+\begin{enumerate}
+    \item $f(x) \geq 0 ~~ \forall x \in \R$
+    \item $\left \lbrace x \mid f(x) \neq 0 \right \rbrace$ es contable, sean $x_1,x_2, \dots$ sus elementos.
+    \item $\sum\limits_i f(x_i) =1$
+\end{enumerate}
+Entonces  $f$ es una función de densidad discreta.
+\begin{center}
+    \ul{\LARGE DENSIDADES DISCRETAS}
+\end{center}
+
+
+\ul{\Large Binomial:}
+    $$f(x)= \binom{n}{x} p^x (1-p)^{n-x} ~, \text{ si }x=0,1,\dots,n.$$
+    $$X \sim B(n,p)$$
+
+\ul{\Large Hipergeométrica:}
+    $$f(x)=\frac{\binom{M}{x}\binom{N-M}{n - x}}{\binom{N}{n}}~, \text{ si }x=0,1,\dots,n.$$
+    $$X\sim \mathscr{H}(n,M,N)$$
+
+\ul{\Large Geométrica:}
+    $$f(x)=p(1-p)^x~, \text{ si }x\in\N_0,0<p<1.$$
+    $$X\sim G(p)$$
+
+\ul{\Large Binomial Negativa:}
+    $$f(x)=p^\alpha \binom{-\alpha}{x} (-1)^x (1-p)^x~, \text{ si }x\in \N_0, 0<p<1.$$
+    $$X \sim B^-(\alpha,p)$$
+    $$\binom{-\alpha}{x}:=\frac{\prod\limits_{i=0}^{x-1} (-\alpha-i)}{x!}$$
+    
+\ul{\Large Poisson:}
+    $$f(x)=\frac{\lambda^xe^{-\lambda}}{x!}~, \text{ si }x\in \N_0.$$
+    $$X \sim \mathcal{P}(\lambda)$$
+
+
+\newpage
+
+\ul{\Large Definición:} Sea \EP ~ un Espacio de probabilidad, y $X$ una v.a en este Espacio. Entonces la función $F:\R \rightarrow [0,1]$ dada por $F(x)=P(X \leq x) \forall x\in\R$ se llama función de distribución de $X$.\newline
+
+
+\ul{\Large Teorema:} Sea $F:\R \rightarrow \R$ tal que:
+\begin{enumerate}
+    \item $\lim\limits_{x\rightarrow\infty} F(x)=1$ y $\lim\limits_{x\rightarrow-\infty} F(x)=0$
+    \item $F$ es continua por derecha, i.e $\forall x\in \R: \lim\limits_{t\rightarrow x^+} F(t)=F(x)$.
+    \item $F$ es no decreciente.
+    
+\end{enumerate}
+Entonces $F$ es una función de distribución.\newline
+
+\ul{\Large Definición:} Sean $X_1,\dots,X_r$ v.a en un Espacio de probabilidad \EP ~ entonces el vector ${\bf X}=(X_1,\dots,X_r)$ es una v.a $r-\text{dimensional}$. Asimismo, si $X_1,\dots,X_r$ son v.a discretas, entonces $\bf{X}$ se llamará discreta.\newline
+
+\ul{\Large Definición:} Análogamente se define la función de densidad discreta $f:\R^r \rightarrow \R$ de una v.a discreta $\bf X$ como:
+$$f({\bf x})= P({\bf  X=x})$$
+
+también diremos que $f$ es la función de densidad conjunta de  $X_1,\dots,X_r$.\newline Llamaremos a la función de densidad discreta $f_{X_i}$ de la $i-\text{ésima}$ coordenada de $\bf X$ como la $i-\text{ésima}$ función de densidad marginal de $\bf X$.\newline
+
+Al igual que en el caso unidimensional, se cumple el  siguiente \\ 
+
+\hspace{0.5cm}
+\ul{\Large Teorema:} Sea $f:\R^r\rightarrow\R$ tal que:
+\begin{enumerate}
+    \item $f({\bf x}) \geq 0 ~~ \forall {\bf x} \in \R^r$
+    \item $\left \lbrace {\bf x}\mid f({\bf x}) \neq 0 \right \rbrace$ es contable, sean ${\bf x}_1,{\bf x}_2, \dots$ sus elementos.
+    \item $\sum\limits_i f({\bf x_i}) =1$
+\end{enumerate}
+Entonces $f$ es una función de densidad discreta.\newline
+
+\ul{\Large Definición:} Sean $X_1,\dots,X_r$ v.a discretas en un Espacio de probabilidad \EP ~, y sea $f$ su función de densidad conjunta, diremos que son mutualmente independientes si:
+
+$$f(x_1, \dots, x_r)= \prod\limits_{i=1}^r f_{X_i}(x_i)$$
+
+\newpage
+
+\begin{center}
+    \LARGE Funciones Generadoras
+\end{center}
+
+\ul{\Large Definición:} Sea $X$ una v.a entera no negativa. La función generadora $\Phi_X:[-1,1] \rightarrow \R$ de $X$ como la siguiente serie:
+$$\Phi_X(t)=\sum\limits_{x=0}^\infty f_X(x) t^x$$
+
+\ul{\Large Teorema:} Sean $X$ e $Y$ dos v.a enteras no negativas, si $\Phi_X=\Phi_Y$ entonces $X \sim Y$. \newline
+
+\ul{\Large Teorema:} Sean $X$ e $Y$ dos v.a enteras no negativas independientes, entonces:
+$$\Phi_{X+Y}=\Phi_X\Phi_Y$$
+
+\ul{\LARGE Funciones Generadoras de distribuciones:}
+
+\begin{itemize}
+\large
+    \item $X \sim B(n,p) \implies \Phi_X(t)=(pt+1-p)^n$
+    \item $X \sim B^-(\alpha,p) \implies \Phi_X(t)=\left( \frac{p}{1-t(1-p)}\right)^\alpha$
+    \item $X\sim \mathcal{P}(\lambda) \implies \Phi_X(t)=e^{\lambda(t-1)}$
+\end{itemize}
+\normalsize
+\newpage
+
+\begin{center}
+    \LARGE VARIABLES ALEATORIAS CONTINUAS
+\end{center}
+
+\ul{\Large Definición:} Una variable aleatoria $X$ se dice continua si $\forall x\in \R: P(X=x)=0$\newline 
+
+
+\ul{\Large Teorema:} Una variable aleatoria $X$ es continua si y solo si su función de distribución $F$ es continua.\newline
+
+\ul{\Large Definición:} Diremos que una función $f: \R \rightarrow \R_{\geq0}$ integrable que cumpla:
+$$\int\limits_{-\infty}^\infty f(x)=1$$
+
+es una función de densidad.\newline
+
+\ul{\Large  Definición:} Sea $X$ una v.a continua. Si la función de distribución $F$ de $X$ cumple que existe una función de densidad tal que:
+
+$$F(x)=\int\limits_{-\infty}^x f(t) dt$$
+
+Entonces se dirá que $X$ es \textit{absolutamente continua}, y llamaremos a esa $f$ como una función de densidad de $X$, que denotaremos como $f_X$.\newline
+
+
+
+
+
+\ul{\Large Teorema:} Sea $\varphi:I \rightarrow \R$ una función diferenciable estrictamente creciente o estrictamente decreciente, definida en un intervalo $I$,y sea $\varphi^{-1}$ su inversa. Sea $X$ una variable aleatoria continua con densidad $f$ tal que $f(x)=0\forall x\not \in I$. Entonces $Y=\varphi(X)$ tiene densidad $g$ dada por $g(y)=0 \forall y\not \in \varphi(I)$ y:
+$$g(y)=f(\varphi^{-1}(y)) \left| \frac{d}{dy}\varphi^{-1}(y)\right|~~ \forall y \in \varphi(I)$$
+
+\ul{\Large Definición:} Una variable aleatoria $X$ se llama \textit{simétrica} si $X$ y $-X$ tienen la misma función de distribución.\newline
+
+\ul{\Large Teorema} Una variable aleatoria absolutamente continua $X$ es simétrica si y solo si su función de densidad $f_X$ es simétrica.
+
+\newpage
+
+\begin{center}
+    \ul{\LARGE DENSIDADES CONTINUAS}
+\end{center}
+\ul{\Large Uniforme:}
+\begin{equation*}
+    f(x)= \begin{cases}
+        \left(b-a \right)^{-1}, \text{ si } a< x< b\\
+        0 ~~~~~~\text{Caso Contrario}
+    \end{cases}
+\end{equation*}
+$$X \sim \mathcal{U}(a,b), ~~ a<b$$
+
+\ul{\Large Exponencial:}
+
+\begin{equation*}
+    f(x)= \begin{cases}
+        \lambda e^{-\lambda x}, ~ x>0\\
+        0 ~~~~~~~~x\leq0
+    \end{cases}
+\end{equation*}
+$$X \sim Exp(\lambda), ~~\lambda>0$$
+
+\ul{\Large Normal:}
+$$\varphi(x)=\frac{1}{\sigma\sqrt{2\pi}} e^{-(x-\mu)^2/2\sigma^2}$$
+$$X \sim N(\mu,\sigma^2), ~~\sigma>0$$
+
+\ul{\Large Gamma:}
+\begin{equation*}
+    f(x)= \begin{cases}
+        \frac{\lambda^\alpha}{\Gamma(\alpha)} x^{\alpha -1} e^{-\lambda x}, ~ x>0\\
+        0 ~~~~~~~~x\leq0
+    \end{cases}
+\end{equation*}
+$$\alpha=m\in \N \implies F(x)=\int\limits_0^x f(y)dy= 
+\int\limits_0^x \frac{\lambda^m y^{m-1} e^{-\lambda y}}{(m-1)!} dy \overset{\text{I.P.P}}{=}
+1-\Sum_{k=0}^{m-1} \frac{(\lambda x)^k e^{-\lambda x}}{k!},~~ x>0$$
+$$X\sim \Gamma(\alpha,\lambda),~~\alpha>0, \lambda>0$$
+$$\Gamma(\alpha):=\int\limits_0^\infty x^{\alpha-1} e^{-x} dx, \alpha>0$$
+
+\ul{\Large Cauchy:}
+$$f(x)=\frac{1}{\pi(1+x^2)}$$\\
+
+\hspace{3cm}
+
+\ul{\Large Definición:} Sean $X$ e $Y$ dos variables aleatorias, se define a la función de distribución conjunta $F:\R^2 \rightarrow \R$ de $X$ e $Y$ como:
+$$F(x,y)= P(X\leq x, Y\leq y)$$
+Las funciones de distribución unidimensionales $F_X$ y $F_Y$ se llamarán funciones de distribución marginales de $X$ e $Y$. 
+
+Si además existe una función $f:\R^2 \rightarrow\R$ integrable tal que:
+$$F(x,y)=\int_{-\infty}^x\int_{-\infty}^y f(u,v) dvdu$$ 
+entonces diremos que $f$ es una función de densidad conjunta del vector $(X,Y)$
+
+\newpage
+
+
+\ul{\Large Propiedades:}
+\begin{enumerate}
+    \item $$F_X(x)=\lim_{y\rightarrow\infty} F(x,y)$$
+    $$F_Y(x)=\lim_{x\rightarrow\infty} F(x,y)$$
+    \item $$P\left( (X,Y) \in A\right)=\iint\limits_A f(x,y) dxdy$$
+    \item $$f_X(x)=\int\limits_{-\infty}^{\infty} f(x,y) dy$$
+    $$f_Y(y)=\int\limits_{-\infty}^{\infty} f(x,y) dx$$
+    \item $$\frac{\partial^2}{\partial x\partial y} F(x,y)= f(x,y)$$
+\end{enumerate}
+
+\ul{\Large Definición:} Dos v.a $X$ e $Y$ se dicen independientes si para todo cuarteto $a\leq b, c\leq d$:
+
+$$P(a<X\leq b, c<Y \leq d)=P(a<X\leq b) P(c<Y\leq d)$$
+
+\ul{\Large +Propiedades:}
+\begin{enumerate}
+    \item $$F_{X+Y}(z)=\int\limits_{-\infty}^\infty f(x,z-x) dx$$
+    \item $$f_{\frac{Y}{X}}(z)=\int\limits_{-\infty}^{\infty} |x| f(x,xz) dx$$
+    $$F_{\frac{Y}{X}}(z)=\int\limits_{-\infty}^zf_{\frac{Y}{X}}(v)dv$$
+\end{enumerate}
+
+\ul{\Large Definición:} Sean $X$ e $Y$ dos variables aleatorias con densidad conjunta $f$. Se define la densidad condicional $f_{Y|X}:\R\rightarrow\R$ como:
+\begin{equation*}
+f_{Y|X}(y~|~x)= \begin{cases}
+    \scaleto{ \frac{f(x,y)}{f_X(x)}}{30pt} ,~~ \text{ si } f_X(x)\neq0\\
+    0, ~~~~~~~~~~~~~~~\text{C.C}
+\end{cases}
+\end{equation*}
+
+\newpage
+
+\begin{center}
+    \Huge ESPERANZA
+\end{center}
+\normalsize
+
+\ul{\Large Definición:} Sea $X$ una v.a discreta con imagen $\left\lbrace x_1, x_2, \dots \right \rbrace$, tal que $\Sum_i |x_i| f_X(x_i)<\infty$, se define el valor esperado de $X$, $E(X)$, como:
+
+$$E(X)=\Sum_i x_i f(x_i)$$
+
+En caso contrario se dice que su esperanza no es finita.\\
+
+\ul{\Large Teorema:} Sea $X$ una v.a, y sea $\varepsilon>0$, declaramos la variable aleatoria $X_\varepsilon$ definida por:
+$$X_\varepsilon=k,~~ \varepsilon k \leq X <\varepsilon(k+1)$$
+entonces si $X_\varepsilon$ tiene esperanza finita para algún $\varepsilon>0$ entonces $X_\varepsilon$ tiene esperanza finita para todo $\varepsilon>0$ y el límite:
+
+$$\lim_{\varepsilon \rightarrow 0} E(X_\varepsilon)$$
+
+existe.\newline
+
+\ul{\Large Definición:} Sea $X$ una v.a, entonces si existe un $\varepsilon>0$ tal que $X_\varepsilon$ tiene esperanza finita, entonces decimos que $X$ tiene esperanza $E(X)$ finita:
+
+$$E(X)=\lim_{\varepsilon \rightarrow 0} E(X_\varepsilon)$$
+
+caso contrario decimos que $X$ tiene esperanza no finita.
+
+También definimos la media de $X$ como $\mu=E(X)$.
+\newline
+
+\ul{\Large Teorema:} Sea $X$ una v.a continua con densidad $f$, entonces $X$ tiene esperanza finita si y solo si:
+
+$$\int\limits_{-\infty}^{\infty} |x|f(x) dx<\infty$$
+
+y en tal caso se cumple la igualdad:
+
+$$E(x)=\int\limits_{-\infty}^{\infty} xf(x) dx$$
+
+\ul{\Large Definición:} Sea $X$ una v.a, entonces $X$ tiene momento de orden $r\in \N$ si $E(X^r)$ es finito, el momento central de orden $r$ se define como $E\left( (X-\mu)^r \right)$.\\
+
+
+\ul{\Large Definición:} Sea $X$ una v.a con momento central de orden $2$, definimos la varianza de $X$, $\text{Var}(X)$ como:
+
+$$\text{Var}(X)=E\left( (X-\mu)^2\right)$$
+
+Asimismo se define la desviación standard $\sigma=\sqrt{\text{Var}(X)}$\newline
+
+\newpage
+
+\ul{\Large Definición:}  Sean $X$ e $Y$ v.a con momento de orden $2$ finito. Se define la covarianza de $X$ e $Y$ como:
+
+$$\text{Cov}(X,Y)=E\left( ~ \left(X-E(X)\right) ~ \left(Y-E(Y)\right) ~ \right)=E(XY)-E(X)E(Y)$$\newline
+
+
+\ul{\Large Definición:} Sean $X$ e $Y$ dos v.a con varianza no nula, se define el coeficiente de correlación:
+$$\rho(X,Y)=\frac{\text{Cov(X,Y)}}{\sqrt{\text{Var}(X)\text{Var}(Y)}}$$
+Se dirá que $X$ e $Y$ no están correlacionadas si $\rho=0$.\newline
+
+\ul{\Large Teorema:} Sean $X$ e $Y$ dos v.a con momento de segundo orden finito, entonces:
+$$[E(XY)]^2 \leq E(X^2)E(Y^2)$$
+Más aún, la igualdad se da si y solo si o bien $P(Y=0)=1$ o bien $P(X=aY)=1$ para alguna constante $a$.\\
+
+\ul{\large Corolario:} $|\rho|\leq1$, y $|\rho|=1$ si y solo si $P(X=aY)=1$ para alguna constante $a$.\newline
+
+\hspace{5 cm}
+
+\ul{\LARGE Teorema débil de los números grandes:}\\
+
+Sean $X_1,X_2,\dots$ v.a independientes con la misma distribución Y media finita $\mu$. \\
+Sea $S_n=X_1+\dots +X_n$, entonces para todo $\delta>0$:
+$$\lim_{n\rightarrow\infty} P\left( \left| \frac{S_n}{n}-\mu \right| \geq \delta \right)=0$$\\
+
+\hspace{5 cm}
+
+\begin{center}
+\ul{\LARGE TEOREMA CENTRAL DEL LÍMITE (T.C.L):}\\
+\end{center}
+Sean $X_1,X_2,\dots$ v.a independientes con la misma distribución, media finita $\mu$ y desviación $\sigma^2$. Sea $S_n=X_1+\dots +X_n$, si además definimos:
+\Large
+$$S^*_n=\frac{S_n-n\mu}{\sigma\sqrt{n}}$$
+\normalsize Entonces:
+\LARGE
+$$\lim_{n\rightarrow \infty} P(S^*_n\leq x)=\Phi(x)$$
+
+\newpage
+\normalsize
+\ul{\Large Propiedades:}
+
+\begin{enumerate}
+    \item Sean $X$ e $Y$ dos variables aleatorias continuas con densidad conjunta $f$, medias $\mu_X, \mu_Y$ y momentos de orden $2$ finitos, entonces:
+    $$\text{Cov}(X,Y)=\int\limits_{-\infty}^\infty \int\limits_{-\infty}^\infty (x-\mu_X) (y-\mu_Y) f(x,y) ~dydx$$
+    \item (* De mano propia pero la demo es como la de $f_{\frac{Y}{X}}$ )
+    $$f_{XY}(u)=\int\limits_{-\infty}^{\infty} \frac{f\left(x,\frac{u}{x}\right)}{|x|} dx$$
+    $$F_{XY}(z)=\int\limits_{-\infty}^zf_{XY}(u)du$$
+\end{enumerate}
+
+\end{document}
