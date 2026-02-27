@@ -1,0 +1,85 @@
+TODOS LOS EJERCICIOS ESTÁN EN EL ÚNICO ARCHIVO lab2.py
+ESTE ARCHIVO ES ÚNICAMENTE PARA INSTRUCCIONES DE EJECUCIÓN Y EXPLICACIONES VARIAS
+El código se demora (al menos a mí) por importar la carpeta matplotlib.pyplot
+Preliminar:
+    Clase poly:
+        La clase poly está diseñada para poder operar con polinomios y poder evaluarlos.
+        Para ello la clase polinomio se guarda una lista con los coeficientes del mismo, ordenados de menor a mayor grado.
+        Tiene algoritmos standard para suma y producto en O(max(p1.len(),p2.len())) y O(p1.len()*p2.len()) flops, respectivamente.
+        La función len() devuelve la cantidad de coeficientes del polinomio (devuelve 1 si el poly es el polinomio 0).
+        La función horn(x) toma un float x, y evalúa al polinomio en x usando el algoritmo de horn. O(len()) flops.
+        La función to_str() devuelve un string con la forma standard de un polinomio.
+        La función deriv() devuelve un poly con los coeficientes de la derivada.
+        La función Integ() devuelve un poly con los coeficientes de la primitiva con origen al 0.
+Ejercicio1:
+    Si molestan las impresiones respecto a este ejercicio, comentar las líneas 99 y 100.
+    función simpson(fun, a, b, n) O(n) operaciones de flop y evaluaciones en fun. 
+        Dada la función fun, y los extremos a y b, devuelve la integral de a hasta b de fun, usando el metodo compuesto de simpson dividido en n segmentos. 
+    función npol(p1, a ,b): O(p1.len()) flops
+        Dado el poly p1, y los extremos a y b, devuelve el valor de n tal que simpson de p1 en los extremos a y b tenga un error menor a 1e-5.
+        La idea es usar la derivada cuarta del polinomio en la fórmula del error de simpson compuesto y aprovecharse que:
+        |Σ a_i x^i| ≤ Σ |a_i| |x|^i ≤ Σ |a_i| max(|a|,|b|)^i    
+        Me consta aclarar que esta función no es de lo más útil porque es fácilmente integrable un polinomio siendo que una primitiva de un polinomio p1=Σ a_i x^i es P1=Σ (a_i/(i+1)) x^(i+1). Pudiendo integrar así en O(p1.len()) flops.
+        También me consta aclarar que no es el mejor método el que uso para poder obtener una cota superior del máximo de la cuarta derivada de p1 en el intervalo [a,b], pues la cota superior puede irse muy arriba, para mejorar esto se podría implementar un algoritmo para buscar puntos críticos de la cuarta derivada (i.e buscar raíces de la quinta derivada)
+    función nsen(p1, a, b): O(p1.len()) flops
+        Dado el poly p1, y los extremos a y b, devuelve el valor de n tal que simpson de sen(x)*p1 en los extremos a y b tenga un error menor a 1e-5
+        Para explicar qué hace, primero recordemos que: sean f y g dos funciones k veces diferenciables, sea kCi el numero combinatorio de k elegidos de a i, y sea f^(i) la i-ésima derivada de f, entonces:
+            (f*g)^(k)=Σ (kCi) f^(i) * g^(k-i). con i de 0 a k.
+        entonces |(p1*sen)^(4)|=|Σ (4Ci) p1^(i) * sen^(4-i)|≤ Σ (4Ci) |p1^(i)| * |sen^(4-i)| ≤ Σ (4Ci) |p1^(i)|
+        Y el de este ultimo es menor o igual que la suma de los valores absolutos de todos los coeficientes por el valor absoluto de x (omitido en la notación anterior) a sus respectivas potencias
+        Me consta aclarar que esta función no es de lo más útil porque es "exactamente" integrable f(x)=sen(x)*p1 con p1=Σ a_i x**i polinomio (solo en esta línea exponencio con ** para no confundir con derivada), pues una primitiva de g(x) = x**k * sen(x) es G(x)=Σ x**(k-i) sen(x)^(i+3) * (k!)/((k-i)!) con i de 0 a k. (de pura inducción y Una Vaca Vestida de Uniforme, pero igual es fácilmente chequeable simplemente derivando G y ver que da g.), pudiendo integrar en O(p1.len()^2) flops 
+        También me consta aclarar que no es el mejor método el que uso para poder obtener una cota superior del máximo de la cuarta derivada de sen(x)*p1 en el intervalo [a,b], pues la cota superior puede irse muy arriba, para mejorar esto se podría implementar un algoritmo para buscar puntos críticos de la cuarta derivada (i.e buscar raíces de la quinta derivada)
+    función POL_BOG(w,a,b,n): O(n^3 + n^2 * w.len() + n^2 * max(n_pol)) flops (pues son O(n) prodvec)
+        Dado un poly w de "función peso", extremos a y b, y entero n, devuelve una base ortogonal de polinomios hasta grado n con el producto interno de integración de a hasta b con peso w, de menor grado a mayor grado.
+        prodvec(p1,p2):       O((w.len()+n)*n + n*n_pol(w*p1*p2,a,b)) flops pues es el costo de w*p1*p2 + el coste de simpson.
+            Dado polinomios p1 y p2 devuelve la integral de a hasta b de w*p1*p2
+        El único motivo por el que se exige que w sea del tipo poly es que tengo que poder calcular el n para simpson y así poder calcular el producto vectorial correspondiente. Igualmente se podría pasar una aproximación polinómica de una función peso w
+    La respuesta del Ejercicio 1 se guarda se guarda en el poly cuad_min_ej1, que se imprime en las líneas 96 y 97
+
+Ejercicio2:
+    Si molestan las impresiones respecto a este ejercicio, comentar las líneas 152 y 153.
+    función Lin_Tr(A,b,inf): O(n^2) flops
+        Dada una matriz triangular A de tamaño nxn y una lista b de tamaño n (asumiendo que tal n existe), y un booleano inf (si la matriz es o no triangular inferior), devuelve una lista x tal que Ax=b (tomando a x y b como vectores).
+    función LU_fact(A): O(n^3) flops
+        Dada una matriz A de nxn (asumiendo que tal n existe) inversible y tal que A(1:k,1:k) son inversibles para k=1,...,n-1 ,devuelve un par de matrices (L,U) respectivas a la factorización LU. 
+    función Lin_LU(A,B) O(n^3 + n^2 * q) flops
+        Dada una matriz A de nxn y una matriz B de qxn (asumiendo que tal q existe), devuelve una matriz X de qxn tal que A(X[i])=B[i] para todo i=0,...,m-1.
+        (en otras palabras, resuelve q sistemas de ecuaciones lineales con una matriz compartida A)
+        Todo usando una sola factorización LU. Sin la optimización de memoria (pues podría sobrescribir las matrices A y B)
+    La respuesta del Ejercicio 2 se guarda en el poly cuad_min_ej2, que se imprime en las líneas 149 y 150. La respuesta se calcula reutilizando la BOG calculada en Ejercicio 1, por lo que la matriz A de la línea 143 será diagonal.
+    Si quiere que A no sea diagonal descomentar el primer # de la línea 141 (hará que BOG pase a tener la Base (no ortogonal) canónica).
+
+Ejercicio3:
+    Si molestan las impresiones respecto a este ejercicio, comentar las líneas 216 y 217.
+    función Ab_splincub(_a,_b,n,fun,nat,d2fun): O(n^2) flops * 1600 (!!!), O(n) evaluaciones de fun * 40 (!!!), y O(1) evaluaciones de d2fun.
+        Dados extremos _a y _b, un entero n (cantidad de polinomios), una función fun, y un booleano nat (si querés Spline Natural o no (en cuyo caso, se tomará Spline Correcto)),y la segunda derivada d2fun de fun (solo necesario si nat=True), devuelve la Matriz A de 4*n x 4*n y una lista b de tamaño 4*n respectivos al sistema de ecuaciones de los coeficientes de los polinomios cubicos de los intervalos para un Spline de grado k=3 que interpole n+1 puntos equiespaciados en el intervalo [_a,_b], incluyendo extremos.
+        Las ecuaciones en la Matriz A y los coeficientes de los polinomios están ordenados de forma tal que la Matriz A cumple las condiciones de la factorización LU.
+        En caso de ser nat=False se puede prescindir de d2fun y no agregarlo (en tal caso será tomado como None, y no se usará en ninguna parte del código)
+        Volviendo a la composición de la Matriz A, está compuesta por bloques columna de a 4, que son los 4 coeficientes de cada polinomio, ordenados de menor a mayor grado por polinomio. Y también está compuesta por bloques Fila de a 4 ,salvo para el polinomio con index n-1, con las 4 condiciones de Interpolación, C0, C1 y C2 correspondientes al polinomio, en las dos últimas filas están las condiciones de Naturalidad/Correctitud según se halla indicado en nat.
+    Clase splincub:
+        La clase splincub representa un splin cúbico que interpola puntos equiespaciados en un intervalo, esta clase está diseñada para poder guardar los polinomios de un spline y poder evaluarlos llamando a una función más cómoda.
+        La clase splincub se guarda si es natural o no (en caso contrario es correcto), los extremos y la cantidad de polinomios del spline. También se guarda una lista con los puntos equiespaciados.
+        Para inicializarse, llama a la función Ab_splincub y resuelve el sistema de ecuaciones con Lin_LU, con lo que procede a recontruir los polinomios, guardándolos en una lista 'pol', cada polinomio interno es de la clase poly. Todo esto en O(n^3) flops * 64000 (!!!), O(n) evaluaciones de fun * 40 (!!!), y O(1) evaluaciones de d2fun.
+        no tiene implementado ni suma ni producto con splincub o poly.
+        función eval(x):    O(log(splin.n)) flops
+            dado un float x, 'assertea' si x no está en el rango [_a,_b] del splincub, sino devuelve el splincub evaluado en x.
+            esto lo hace buscando el polinomio en splinecub cuyo dominio contiene a x (con búsqueda binaria), y evalua a x en ese poly con horn
+        función to_str():   
+            Devuelve un string con la información de los polinomios dentro del splinecub
+    La respuesta del Ejercicio 3 se guarda en el splincub Splinej3, que se imprime en las líneas 213 y 214
+
+Ejercicio4:
+    Si molestan el gráfico y las impresiones que saltan respecto a este ejercicio, comentar la línea 223 y la línea 241
+    Si comentó la línea 223 y quiere el gráfico con fondo blanco, inicialice a la variable fondo_negro en "n" (con las comillas) en la línea 219
+    Si no comentó la línea 223, ingrese "n" (sin las comillas) en la consola si quiere que el fondo del gráfico sea Blanco. En caso contrario ingrese cualquier String (o no ingrese nada y aprete enter) para que se presente el gráfico con fondo fondo negro.
+
+Extra:
+    Si molestan las impresiones que saltan al final, comentar la línea 280
+    Si comentó la línea 280 y quiere el gráfico del Extra, inicialice a la variable Quiero_Extra en "y" (con las comillas) en la línea 279
+    Si no comentó la línea 280, ingrese "y" (sin las comillas) en la consola si quiere que el Extra. En caso contrario ingrese cualquier String (o no ingrese nada y aprete enter) para que finalice el programa.
+    Las funciones en extra son simplemente "mejoras" a la hora de calcular las integrales respecto al ejercicio 1, usando las primitivas de las funciones.
+    La pinta del gráfico de Extra será de las mismas características del gráfico del Ejericio 4.
+    La aproximación de cuadrados minimos que sale en el gráfico de extra es el de Ejercicio 1, a diferencia del gráfico del Ejercicio 4 que se usa el del Ejercicio 2. Aunque la diferencia es casi imperceptible, decidí poner el del Ejercicio 1 en Extra puesto que el del Ejercicio 1 y el de Extra se consiguen resolviendo directamente un sistema lineal.
+    
+
+

@@ -1,0 +1,39 @@
+TODOS LOS EJERCICIOS ESTÁN EN EL ÚNICO ARCHIVO parcial.py
+ESTE ARCHIVO ES ÚNICAMENTE PARA INSTRUCCIONES DE EJECUCIÓN
+
+Ejercicio 1:
+    Cómo ejecutar la función serie_seno:
+    serie_seno recibe un valor escalar x y devuelve el float P(x), donde P es el polinomio de Taylor de orden 2*n-1 de la funcion seno. 
+    También para ello implemento el algoritmo de Horn para evaluar el polinomio P. Y llamo a la función init_fact, que recibe un valor maxv y calcula los factoriales desde el último factorial calculado hasta maxv-1, y se almacena la información en la lista Fact.
+    Para la particularidad del Ejercicio 1 del parcial, fijo n=5.
+
+Ejercicio 2:
+    Se ejecuta solo. En caso de molestar, comentar la línea número 37 de parcial.py
+
+Ejercicio 3:
+    rsecante se ejecuta tal cual como dicta el enunciado del ejercicio.
+
+Ejercicio 4:
+    busqueda_ceros recibe todo lo que pide el enunciado. La única particularidad es que fun es una función que dado x devuelve el par (f(x),f'(x)).
+    Esto es debido a que para el Método de Newton necesito la derivada de la función de la cual quiero aproximar su raíz.
+    Además esta decisión fue debido a la recomendación del profesor del práctico. Igualmente en 'Extra' implementé una forma de 'aproximar' la derivada de una función.
+    busqueda_ceros muestra en pantalla y devuelve exactamente lo que pide el enunciado de Ejercicio 4.
+    rnewton recibe una función fun como la que recibo en busqueda_ceros, y el resto de parametros en el mismo orden, salvo por x1.
+    rnewton devuelve la lista de k iteraciones de metodo de newton una vez que |f(x_k)|<err o k=mit, y la lista de sus imágenes, ambas listas en un par ordenado.
+
+Ejercicio 5:
+    Se ejecuta solo. En caso de molestar, comentar las líneas número 133 y 137 de parcial.py
+    declaré la función serie_coseno que dado un escalar x devuelve el float P(x), donde P es el polinomio de Taylor de orden (no grado) 2*n-1 de la función coseno, similar a la función serie_seno.
+    Además declaré la función seno_coseno que dado x devuelve el par (serie_seno(x),serie_coseno(x)). Todo esto para poder llamar correctamente a la función busqueda_ceros
+    Las respuestas a las preguntas del enunciado de este Ejercicio estan en el archivo parcial.py, en el apartado de ejercicio 5.
+
+Extra:
+    Se ejecuta solo al descomentar las líneas 169 y 172.
+    Declaro una nueva función busqueda_ceros2, símil a la función busqueda_ceros, solo que ahora recibe un fun devuelve solamente f(x).
+    Para poder llamar a Newton lo que hago es 'aproximar' f'(x) debido al siguiente análisis:
+        Si f es derivable en x, entonces existe el lim (f(x+h)-f(x))/h cuando h->0. eso significa que para todo errf>0 exite un errx(f,x,errf)>0 tal que si 
+        0<|x-h|< errx(f,x,errf) entonces |(f(x+h)-f(x))/h - f'(x)|<errf. Por ello algo que podemos hacer es tomar el h muy chiquito y rezar que se cumpla 0<|x-h|< errx(f,x,errf) para el error de (f(x+h)-f(x))/h  que queremos tolerar sea a lo sumo errf.
+        Dado que nunca se habla de algún error específico, y a f no la conocemos de antemano, podemos confiar en que errx(f,x,errf)=x*1e-8 funcione.
+        Problemas: 
+            si x es muy grande entonces el rango es absurdamente grande (igualmente decidí poner x*1e-8 pues  si tomamos errx=1e-8 entonces podría pasar para algún x suficientemente grande que x+errx=x debido al punto flotante). Igualmente en los ejercicios estamos trabajando con rangos numéricos pequeños.
+            la resta  de (f(x+h)-f(x))/h genera cancelación de dígitos significativos, y tiene probabilidades de subir altamente el error relativo, sobre todo porque si f es derivable en x, también es continua en x, entonces f(x+h) va a estar muy cerca de f(x), por lo que hay mucha cancelación de dígitos significativos.
