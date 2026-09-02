@@ -106,11 +106,11 @@ def dlup(A):
     for i in range(N):
         for j in range(i+1,N):
             if(abs(U[p[j],i])>abs(U[p[i],i])): p[i],p[j] = p[j],p[i]
-        L[p[i],i]=1
+        L[p[i],p[i]]=1
         for j in range(i+1,N):
-            L[p[j],i]=U[p[j],i]/U[p[i],i]
+            L[p[j],p[i]]=U[p[j],i]/U[p[i],i]
             U[p[j],i]=0
-            U[p[j],i+1:]-=U[p[i],i+1:]*L[p[j],i]
+            U[p[j],i+1:]-=U[p[i],i+1:]*L[p[j],p[i]]
     return (L,U,p)
 
 (R,P)=egaussp(A,b)
@@ -134,7 +134,7 @@ print(P,"dlup P de B")
 #ej 11)
 
 def invalid(N):
-    return np.array([np.nan]*n)
+    return np.array([np.nan]*N)
 
 def sol_trinffilp(A,b,p):
     (N,M)=A.shape
@@ -159,7 +159,7 @@ def sol_trinfcolp(A,_b,p):
                 return invalid(M)
             continue
         x[i]=b[p[i]]/A[p[i],i]
-        for j in range(i+1,N)
+        for j in range(i+1,N):
             b[p[j]]-=A[p[j],i]*x[i]
     return x
 
@@ -188,7 +188,7 @@ def sol_trsupcolp(A,_b,p):
             continue
         x[i]=b[p[i]]/A[p[i],i]
         for j in range(i):
-            b[p[j]]-=A[:i,i],x[i])
+            b[p[j]]-=A[p[j],i]*x[i]
     return x
 
 
@@ -197,4 +197,113 @@ def sol_trsupcolp(A,_b,p):
 def sol_egauss(_A,_b):
     (R,P)=egaussp(_A,_b)
     A=R[:,:R.shape[1]-1]
-    b=R[:,R.shape[1]]
+    b=R[:,R.shape[1]-1]
+    return sol_trsupfilp(A,b,P);
+
+A=np.array([[2,10,8,8,6],[1,4,-2,4,-1],[0,2,3,2,1],[3,8,3,10,9],[1,4,1,2,1]],dtype=np.float64);
+b1=np.array([52,14,12,51,15],dtype=np.float64)
+b2=np.array([50,4,12,48,12],dtype=np.float64)
+assert(np.allclose(A@sol_egauss(A,b1),b1,atol=EPS,rtol=EPS))
+assert(np.allclose(A@sol_egauss(A,b2),b2,atol=EPS,rtol=EPS))
+
+#12)
+
+def sol_trinffilpp(A,b,p):
+    (N,M)=A.shape
+    if(N!=b.shape[0]): return invalid(M)
+    x=np.array([0]*M,dtype=np.float64)
+    for i in range(M):
+        aux=0.
+        for j in range(i):
+            aux+=A[p[i],p[j]]*x[p[j]]
+        
+        if(np.abs(A[p[i]][p[i]])<=EPS):
+            if(np.abs(aux-b[p[i]])>EPS):
+                return invalid(M)
+            continue
+
+        x[p[i]]=(b[p[i]]-aux)/A[p[i]][p[i]]
+    return x
+
+def inv_lu(X):
+    (L,U,P)=dlup(X)
+    # assert(np.allclose(L@U,A,atol=EPS,rtol=EPS))
+    Y=np.zeros(X.shape)
+    ei=np.zeros(X.shape[0])
+    for i in range(X.shape[0]):
+        ei[i]=1
+        Y[:,i]=sol_trsupfilp(U,sol_trinffilpp(L,ei,P),P)
+        ei[i]=0
+    return Y
+
+
+assert(np.allclose(A@inv_lu(A),np.eye(A.shape[0]),atol=EPS,rtol=EPS))
+
+
+def det_lu(X):
+    (N,M)=A.shape
+    assert(N==M)
+    U=np.ndarray.copy(A)
+    L=np.zeros((N,N))
+    p=[i for i in range(N)]
+    det=1.
+    for i in range(N):
+        for j in range(i+1,N):
+            if(abs(U[p[j],i])>abs(U[p[i],i])): p[i],p[j] = p[j],p[i]
+        if(abs(U[p[i],i])<=EPS): return 0.
+        det*=U[p[i],i]
+        L[p[i],p[i]]=1
+        for j in range(i+1,N):
+            L[p[j],p[i]]=U[p[j],i]/U[p[i],i]
+            U[p[j],i]=0
+            U[p[j],i+1:]-=U[p[i],i+1:]*L[p[j],p[i]]
+    return det
+
+import time
+mitime=time.time()
+midet=det_lu(A)
+mitime=time.time()-mitime
+
+sutime=time.time()
+sudet=np.linalg.det(A)
+sutime=time.time()-sutime
+
+assert(abs(midet-sudet)<=EPS)
+
+print("det_lu tadó "+str(mitime)+" y np.linalg.det tardó "+str(sutime))
+
+
+import matplotlib.pyplot as plt #por favor importar para graficar
+
+
+
+
+def ecuacion_esfera(p1,p2,p3,p4):
+    A=np.block([[p1,np.eye(1)],[p2,np.eye(1)],[p3,np.eye(1)],[p4,np.eye(1)]])
+    b=-np.array([np.inner(p1,p1),np.inner(p2,p2),np.inner(p3,p3),np.inner(p4,p4)])
+    v=sol_egauss(A,b)
+
+    c=-np.array([v[0],v[1],v[2]])/2
+    r=np.sqrt(c*c-v[3])
+
+    fig=plt.figure()
+    ax=fig.add_subplot(111,projection='3d')
+    N=100
+    h=2*np.pi/(N)
+    th=[i*h for i in range(N)]
+    h/=2
+    ph=[i*h for i in range(N)]
+    x=[r*np.sin(b)*np.cos(a)+c[0] for a in th for b in ph]
+    y=[r*np.sin(b)*np.sin(a)+c[1] for a in th for b in ph] #eje y.
+    z=[r*np.cos(b)+c[2] for a in th for b in ph]
+    ax.scatter3D(x,y,z) #grafica
+    plt.show()    #muestro la grafica
+
+    return v
+
+p1=np.array([1,1,0])
+p2=np.array([3,-1,3])
+p3=np.array([-1,3,-4])
+p4=np.array([14,84,58])
+
+ecuacion_esfera(p1,p2,p3,p4)
