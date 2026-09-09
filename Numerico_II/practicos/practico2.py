@@ -23,11 +23,11 @@ B=np.array([[1,5,0,7],[2,8,3,0],[0,1,1,1],[9,0,6,7]],dtype=np.float64)
 c=np.array([1,2,3,4],dtype=np.float64)
 
 print(A,"A")
-print(b,"b")
-print(egauss(A,b),"egaus")
+print(b,"b\n")
+print(egauss(A,b),"egaus\n")
 print(B,"B")
-print(c,"c")
-print(egauss(B,c),"egauss")
+print(c,"c\n")
+print(egauss(B,c),"egauss\n")
 
 
 #ej 6)
@@ -45,12 +45,12 @@ def dlu(A):
     return (L,U)
 
 (L,U)=dlu(A)
-print(L,"L de A")
-print(U,"U de A")
+print(L,"L de A\n")
+print(U,"U de A\n")
 assert(np.allclose(L@U,A,atol=EPS,rtol=EPS))
 (L,U)=dlu(B)
-print(L,"L de B")
-print(U,"U de B")
+print(L,"L de B\n")
+print(U,"U de B\n")
 assert(np.allclose(L@U,B,atol=EPS,rtol=EPS))
 #ej 7)
 
@@ -75,9 +75,9 @@ def egauss_window3(_A,_b):
     A[N-1,N-1]=1
     return A
 
-print(egauss_window3(A,b),"egauss window")
+print(egauss_window3(A,b),"egauss window\n")
 
-print(egauss_window3(B,c),"egaus window")
+print(egauss_window3(B,c),"egaus window\n")
 
 #ej 10)
 
@@ -114,22 +114,22 @@ def dlup(A):
     return (L,U,p)
 
 (R,P)=egaussp(A,b)
-print(R,"egausp R de A")
-print(P,"egausp P de A")
+print(R,"egausp R de A\n")
+print(P,"egausp P de A\n")
 
 (R,P)=egaussp(B,c)
-print(R,"egausp R de B")
-print(P,"egausp P de B")
+print(R,"egausp R de B\n")
+print(P,"egausp P de B\n")
 
 (L,U,P)=dlup(A)
-print(L,"dlup L de A")
-print(U,"dlup U de A")
-print(P,"dlup P de A")
+print(L,"dlup L de A\n")
+print(U,"dlup U de A\n")
+print(P,"dlup P de A\n")
 
 (L,U,P)=dlup(B)
-print(L,"dlup L de B")
-print(U,"dlup U de B")
-print(P,"dlup P de B")
+print(L,"dlup L de B\n")
+print(U,"dlup U de B\n")
+print(P,"dlup P de B\n")
 
 #ej 11)
 
@@ -241,22 +241,27 @@ assert(np.allclose(A@inv_lu(A),np.eye(A.shape[0]),atol=EPS,rtol=EPS))
 
 
 def det_lu(X):
-    (N,M)=A.shape
+    (N,M)=X.shape
     assert(N==M)
-    U=np.ndarray.copy(A)
+    U=np.ndarray.copy(X)
     L=np.zeros((N,N))
     p=[i for i in range(N)]
-    det=1.
+    det=np.float64(1)
+    sgn=0
     for i in range(N):
         for j in range(i+1,N):
-            if(abs(U[p[j],i])>abs(U[p[i],i])): p[i],p[j] = p[j],p[i]
-        if(abs(U[p[i],i])<=EPS): return 0.
+            if(abs(U[p[j],i])>abs(U[p[i],i])): 
+                p[i],p[j] = p[j],p[i]
+                sgn+=1
+        if(abs(U[p[i],i])<=EPS): return np.float64(0)
         det*=U[p[i],i]
         L[p[i],p[i]]=1
         for j in range(i+1,N):
             L[p[j],p[i]]=U[p[j],i]/U[p[i],i]
             U[p[j],i]=0
             U[p[j],i+1:]-=U[p[i],i+1:]*L[p[j],p[i]]
+    if sgn&1:
+        return -det
     return det
 
 import time
@@ -270,7 +275,7 @@ sutime=time.time()-sutime
 
 assert(abs(midet-sudet)<=EPS)
 
-print("det_lu tadó "+str(mitime)+" y np.linalg.det tardó "+str(sutime))
+print("det_lu tadó "+str(mitime)+" y np.linalg.det tardó "+str(sutime)+'\n')
 
 
 import matplotlib.pyplot as plt #por favor importar para graficar
@@ -307,3 +312,64 @@ p3=np.array([-1,3,-4])
 p4=np.array([14,84,58])
 
 ecuacion_esfera(p1,p2,p3,p4)
+
+
+#ej 16)
+
+A=np.array([ #A
+    [-1,-2,0,0,4], #1 
+    [1,-1,0,2,0], #2
+    [-2,1,-1,0,0], #3
+    [0,0,1,2,0], #4
+    [0,0,1,0,1] #5
+],dtype=np.float64)
+b=np.array([ #A
+    70, #1 
+    60, #2
+    -75, #3
+    85, #4
+    90 #5
+],dtype=np.float64)
+
+B=np.array([ #B
+    [-1,0,-4,0,0], #1
+    [1,-1,0,0,-2], #2
+    [0,1,-1,0,0], #3
+    [-2,0,-2,1,0], #4
+    [0,0,0,-1,2], #5
+],dtype=np.float64)
+
+c=np.array([ #B
+    -46, #1
+    65, #2
+    -30, #3
+    -86, #4
+    50 #5
+],dtype=np.float64)
+
+#a)
+detA=det_lu(A)
+sudetA=np.linalg.det(A)
+assert(abs(detA-sudetA)<=EPS)
+print('Soluciones de horario A:')
+print(sol_egauss(A,b))
+if(abs(detA)<=EPS): print('no es única\n')
+else: print('es única\n')
+
+
+print('\n')
+detB=det_lu(B)
+sudetB=np.linalg.det(B)
+assert(abs(detB-sudetB)<=EPS)
+print('Soluciones de horario B:')
+print(sol_egauss(B,c))
+if(abs(detB)<=EPS): print('no es única\n')
+else: print('es única\n')
+
+
+#b) dado que ya vi qué devuelve en a)
+
+print('conviene el horario A\n')
+
+
+
