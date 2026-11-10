@@ -1,6 +1,6 @@
 import numpy as np
 
-EPS=1e-9
+EPS=np.float128(10)**-20
 
 def egaussp(_A,_b):
     (N,M)=_A.shape
@@ -24,7 +24,7 @@ def invalid(N):
 def sol_trsupfilp(A,b,p):
     (N,M)=A.shape
     if(N!=b.shape[0]): return invalid(M)
-    x=np.array([0]*M,dtype=np.float64)
+    x=np.array([0]*M,dtype=np.float128)
     for i in range(M-1,-1,-1):
         if(np.abs(A[p[i]][i])<=EPS):
             if(np.abs(np.inner(A[p[i],i+1:],x[i+1:])-b[p[i]])>EPS):
